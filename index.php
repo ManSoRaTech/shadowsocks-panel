@@ -16,6 +16,7 @@ define('ROOT_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 define('LIBRARY_PATH', ROOT_PATH . 'Library/');
 define('DATA_PATH', ROOT_PATH . 'Data/');
 define('TIMESTAMP', time());
+error_reporting(E_ERROR | E_PARSE);
 @ini_set('display_errors', 'on');
 @ini_set('expose_php', false);
 @date_default_timezone_set('Asia/Shanghai');
@@ -96,6 +97,9 @@ function delDir($dir) {
 }
 
 function colorize($text, $status) {
+    if ($whereIsCommand = (PHP_OS == 'WINNT')) {
+        return $text;
+    }
     $out = "";
     switch($status) {
         case "SUCCESS":
@@ -116,21 +120,18 @@ function colorize($text, $status) {
     return chr(27) . "$out" . "$text" . chr(27) . "[0m";
 }
 
-function download_composer($url) {
-    echo 'Downloading composer...';
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-    // curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+function download($url, $filePath) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $binary = curl_exec($ch);
-    if (curl_errno($ch)) {
-        echo colorize('FAILED!' . PHP_EOL . curl_error($ch), 'FAILURE');
+    if (!@file_put_contents($filePath, $binary) || curl_errno($ch)) {
+        echo colorize('FAILED!'. PHP_EOL . curl_error($ch) . PHP_EOL, 'WARNING');
         curl_close($ch);
         return false;
     }
-    $fp = fopen(ROOT_PATH . 'composer.phar', 'wb');
-    fputs($fp, $binary);
-    fclose($fp);
     curl_close($ch);
     echo 'Done!' . PHP_EOL;
 }
@@ -143,25 +144,35 @@ function print_arr($arr) {
 
 switch ($argv[1]) {
     case 'install':
+        echo 'Check whether the function is disabled...';
+        // check functions disabled
+        if(!function_exists('system') || !function_exists('exec')) {
+            echo 'FAILED! ' . PHP_EOL . PHP_EOL;
+            echo colorize('ERROR: system() or exec() function is disabled!', 'WARNING') . PHP_EOL;
+            echo 'Please run command: ' . colorize('php -d disable_functions=\'\' index.php install', 'WARNING') . PHP_EOL;
+            break;
+        }
+        echo 'Success' . PHP_EOL;
+        echo 'Check composer install...';
         if (!file_exists(ROOT_PATH . 'composer.phar')) {
-            if (download_composer("http://getcomposer.org/composer.phar") === false) {
-                download_composer("http://static.loacg.com/soft/composer.phar");
+            echo 'Not Installed' . PHP_EOL . 'Downloading...';
+            if (download("http://getcomposer.org/composer.phar", ROOT_PATH . 'composer.phar') === false) {
+                echo 'Retry...' . PHP_EOL;
+                download("https://install.phpcomposer.com/composer.phar", ROOT_PATH . 'composer.phar');
             }
         }
+        $return_arr = [];
         exec(PHP_BINARY . ' ' . ROOT_PATH . 'composer.phar -V', $return_arr);
-        print_arr($return_arr);
+        // print_arr($return_arr);
         if(!file_exists(ROOT_PATH . 'composer.phar') || stripos($return_arr[count($return_arr)-1], 'Composer') === false) {
             @unlink(ROOT_PATH . 'composer.phar');
-            echo colorize('Failed to download composer binary!', 'FAILURE') . PHP_EOL;
+            echo colorize('Failed to download composer binary! please try again OR ', 'WARNING') ;
+            echo colorize('curl -o composer.phar http://getcomposer.org/composer.phar', 'WARNING') . PHP_EOL;
             break;
         }
         unset($return_arr);
+        echo 'Success' . PHP_EOL;
         echo 'Now installing dependencies...' . PHP_EOL;
-        if(!function_exists('system') || !function_exists('exec')) {
-            echo colorize('FAILED! system() or exec() function is disabled!', 'FAILURE') . PHP_EOL;
-            echo 'Please run command: ' . colorize('php -d disable_functions=\'\' index.php install', 'FAILURE') . PHP_EOL;
-            break;
-        }
         system(PHP_BINARY . ' ' . ROOT_PATH . 'composer.phar install');
         if (!file_exists(ROOT_PATH . 'Package/autoload.php')) {
             echo colorize('It seems composer failed to install package', 'FAILURE') . PHP_EOL;
@@ -172,7 +183,7 @@ switch ($argv[1]) {
         if (!file_exists($configFile)) {
             echo 'Config Unknown... copying..' . PHP_EOL;
             copy(DATA_PATH . 'Config.simple.php', $configFile);
-            echo colorize('Please modify ./Data/Config.php and try again', 'WARNING') . PHP_EOL;
+            echo colorize('Please modify ', 'WARNING') . colorize('./Data/Config.php','FAILURE') . colorize(' and try again', 'WARNING') . PHP_EOL;
             break;
         }
 
@@ -180,7 +191,7 @@ switch ($argv[1]) {
         try {
             @include DATA_PATH . 'Config.php';
         } catch (PDOException $e) {
-            echo colorize('Database not available! Please modify ./Data/Config.php and try again', 'WARNING') . PHP_EOL;
+            echo colorize('Database not available! Please modify ', 'WARNING'). colorize('./Data/Config.php','FAILURE') . colorize(' and try again', 'WARNING') . PHP_EOL;
             break;
         }
 
@@ -214,13 +225,58 @@ switch ($argv[1]) {
             exec($phinxCommand . ' rollback', $return_arr, $return_arr2);
             break;
         }
-        echo 'Now installing resources...' . PHP_EOL;
-        echo 'Deleting old resources...  ' . PHP_EOL;
-        echo delDir(ROOT_PATH . 'Public/Resource') ? 'Done.' . PHP_EOL : 'old resources not exist.' . PHP_EOL;
-        echo 'Copying resources...' . PHP_EOL;
-        copyDir(ROOT_PATH . 'Resource', ROOT_PATH . 'Public/Resource');
 
-        echo colorize('All done~ Cheers! open site: '.BASE_URL . 'yourdomain.com/', 'NOTE') . PHP_EOL;
+        fwrite(STDOUT, "Do you want to install a resource file? (y or n): ");
+        $installResource = trim(fgets(STDIN));
+
+        if ($installResource == 'y' || $installResource == 'yes') {
+            echo 'Now installing resources...' . PHP_EOL;
+            echo 'Deleting old resources...  ' . PHP_EOL;
+            echo delDir(ROOT_PATH . 'Public/Resource') ? 'Done.' . PHP_EOL : 'old resources not exist.' . PHP_EOL;
+            echo 'Downloading resources...' . PHP_EOL;
+            // download resource
+            $resourcePath = ROOT_PATH . 'Resource.zip';
+            $unzipPath = ROOT_PATH . 'Resource/';
+
+            if ($whereIsCommand = (PHP_OS == 'WINNT')) {
+                $resourcePath = iconv("utf-8","gb2312", $resourcePath);
+                $unzipPath = iconv("utf-8","gb2312", $unzipPath);
+            }
+
+            if (download('https://mirrors.loacg.com/shadowsocks/shadowsocks-panel/Resource.zip', $resourcePath) === false) {
+                echo colorize('FAILED' . PHP_EOL . 'Downloading...', 'WARNING');
+                download('https://mirrors.loacg.com/shadowsocks/shadowsocks-panel/Resource.zip', $resourcePath);
+            }
+            if (file_exists($resourcePath)) {
+/*                echo 'Unzip Resource.zip...' . PHP_EOL;
+                $resource = zip_open($resourcePath);
+                echo $resource . PHP_EOL;
+                while ($dirResource = zip_read($resource)) {
+                    if (zip_entry_open($resource, $dirResource)) {
+                        $zipFileName = $unzipPath . zip_entry_name($dirResource);
+                        $zipFilePath = substr($zipFileName,0,strrpos($zipFileName, "/"));
+                        echo $zipFileName . PHP_EOL;
+                        if(!is_dir($zipFilePath)) {
+                            mkdir($zipFilePath,0755,true);
+                        }
+                        if(!is_dir($zipFileName)) {
+                            $zipFileSize = zip_entry_filesize($dirResource);
+                            if($zipFileSize < (1024*1024*6)) {
+                                $zipFileContent = zip_entry_read($dirResource, $zipFileSize);
+                                file_put_contents($zipFileName, $zipFileContent);
+                            }
+                        }
+
+                    }
+                }*/
+
+                exec("unzip $resourcePath");
+            }
+            echo 'Copying resources...';
+            copyDir(ROOT_PATH . 'Resource', ROOT_PATH . 'Public/Resource');
+            echo 'Success' . PHP_EOL;
+        }
+        echo colorize('All done~ Cheers! ', 'NOTE') . PHP_EOL;
         break;
     case 'import-sspanel':
         // TODO: 从 ss-panel 导入用户数据
