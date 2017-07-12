@@ -162,13 +162,21 @@ class Member
 
         if ($_POST['sspwd'] != null) {
             $ssPwd = trim($_POST['sspwd']);
+            $method = trim($_POST['ssmethod']);
+            $protocol = trim($_POST['ssprotocol']);
+            $obfs = trim($_POST['ssobfs']);
+            $obfsparam = trim($_POST['ssobfsparam']);
             if ($_POST['sspwd'] == '1') {
                 $ssPwd = Utils::randomChar(8);
             }
             $user->sspwd = $ssPwd;
+            $user->method = $method;
+            $user->protocol = $protocol;
+            $user->obfs = $obfs;
+            $user->obfsparam = $obfsparam;
             $user->save();
             $_SESSION['currentUser'] = $user;
-            $result = array('error' => 0, 'message' => '修改SS连接密码成功', 'sspwd' => $ssPwd);
+            $result = array('error' => 0, 'message' => '修改SS连接设置成功', 'sspwd' => $ssPwd);
             return $result;
         } else {
             Template::putContext('user', $user);
