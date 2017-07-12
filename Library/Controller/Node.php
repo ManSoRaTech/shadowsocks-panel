@@ -62,16 +62,6 @@ class Node
         return $result;
     }
 
-    private static function nodeDetail($server, $server_port, $password, $method, $name)
-    {
-        $ssurl = $method . ":" . $password . "@" . $server . ":" . $server_port;
-        $ssurl = "ss://" . base64_encode($ssurl);
-        $ssjsonAry = array("server" => $server, "server_port" => $server_port, "password" => $password, "timeout" => 600, "method" => $method, "remarks" => $name);
-        $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
-        return array("ssurl" => $ssurl, "ssjson" => $ssjson);
-    }
-
-    //获取ssr信息
     public function getSsrInfo()
     {
         $id = trim($_REQUEST['id']);
@@ -105,18 +95,6 @@ class Node
             $result = array('error' => -1, 'message' => '你不是 VIP, 无法使用高级节点！');
         }
         return $result;
-    }
-
-    private static function nodeSsrDetail($server, $server_port, $password, $name, $enable_custom_method = 0, $method = '', $protocol = '', $obfs = '', $obfaparam = '')
-    {
-        if ($enable_custom_method == 1) {
-
-        }
-        $ssurl = $server . ":" . $server_port . ":" . "auth_sha1_v4" . ":" . $method . ":" . "tls1.2_ticket_auth" . ":" . Template::base64_url_encode($password) . "/?obfsparam=" . Template::base64_url_encode('intl.aliyun.com') . "&remarks=" . Template::base64_url_encode($name) . "&group=" . Template::base64_url_encode(ManSora);
-        $ssurl = "ssr://" . Template::base64_url_encode($ssurl);
-        $ssjsonAry = array("server" => $server, "server_port" => $server_port, "password" => $password, "timeout" => 600, "method" => $method, "protocol" => "auth_sha1_v4", "obfs" => "tls1.2_ticket_auth", "obfsparam" => "intl.aliyun.com", "group" => "ManSora", "remarks" => $name);
-        $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
-        return array("ssurl" => $ssurl, "ssjson" => $ssjson);
     }
 
     private static function verifyPlan($plan, $nodeType)
