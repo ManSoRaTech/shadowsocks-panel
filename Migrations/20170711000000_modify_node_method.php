@@ -24,11 +24,27 @@ class ModifyNodeMethod extends AbstractMigration
             ],
             [
                 'k' => 'custom_protocol_list',
-                'v' => '["","origin","auth_sha1_v4","auth_aes128_md5","auth_aes128_sha1","auth_chain_a"]'
+                'v' => '["origin","auth_sha1_v4","auth_aes128_md5","auth_aes128_sha1","auth_chain_a"]'
             ],
             [
                 'k' => 'custom_obfs_list',
-                'v' => '["","plain","http_simple","http_post","tls1.2_ticket_auth"]'
+                'v' => '["plain","http_simple","http_post","tls1.2_ticket_auth"]'
+            ],
+            [
+                'k' => 'default_user_method',
+                'v' => 'chacha20'
+            ],
+            [
+                'k' => 'default_user_protocol',
+                'v' => 'auth_sha1_v4'
+            ],
+            [
+                'k' => 'default_user_obfs',
+                'v' => 'tls1.2_ticket_auth'
+            ],
+            [
+                'k' => 'default_user_obfsparam',
+                'v' => ''
             ]
         ];
         $this->insert('options', $option, ['after' => 'custom_transfer_repeat']);

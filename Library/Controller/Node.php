@@ -40,7 +40,7 @@ class Node
         $user = User::getUserByUserId(User::getCurrent()->uid);
         $node = MNode::getNodeById($id);
         if ($node->custom_method == 1) {
-            if ($user->protocol != '' || $user->obfs != '' || $user->obfsparam != '')
+            if ($user->protocol != 'origin' || $user->obfs != 'plain')
                 return array('error' => -1, 'message' => 'SSR字段已设置，无法导出SS节点信息！');
             else
                 $method = $user->method;

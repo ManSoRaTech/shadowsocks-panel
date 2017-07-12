@@ -213,7 +213,7 @@ switch ($argv[1]) {
 
         echo 'Now migrating database...' . PHP_EOL;
         if (PATH_SEPARATOR != ':') {
-            $phinxCommand = ROOT_PATH . 'Package\bin\phinx.bat';
+            $phinxCommand = ROOT_PATH . 'Package\robmorgan\phinx\bin\phinx.bat';
         } else {
             $phinxCommand = PHP_BINARY . ' ' . ROOT_PATH . 'Package/robmorgan/phinx/bin/phinx';
         }

@@ -147,6 +147,10 @@ class Auth
                         $user->regDateLine = time();
                         $user->lastConnTime = $user->regDateLine;
                         $user->sspwd = Utils::randomChar();
+                        $user->method = Option::get('default_user_method');
+                        $user->protocol = Option::get('default_user_protocol');
+                        $user->obfs = Option::get('default_user_obfs');
+                        $user->obfsparam = Option::get('default_user_obfsparam');
                         $user->payTime = time(); // 注册时支付时间
                         $user_test_day = Option::get('user_test_day') ?: 7;
                         $user->expireTime = time() + (3600 * 24 * intval($user_test_day)); // 到期时间
