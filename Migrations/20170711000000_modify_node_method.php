@@ -1,6 +1,5 @@
 <?php
 
-use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
 class ModifyNodeMethod extends AbstractMigration
@@ -16,7 +15,6 @@ class ModifyNodeMethod extends AbstractMigration
         $this->table('node')
             ->addColumn('protocol', 'string', ['default' => 'auth_sha1_v4', 'after' => 'method', 'limit' => 100, 'null' => true])
             ->addColumn('obfs', 'string', ['default' => 'tls1.2_ticket_auth', 'after' => 'protocol', 'limit' => 100, 'null' => true])
-            ->addColumn('obfsparam', 'string', ['default' => 'intl.aliyun.com', 'after' => 'obfs', 'limit' => 100, 'null' => true])
             ->save();
 
         $option = [
