@@ -179,6 +179,7 @@
                             return;
                         }
                         if(result.data.error == 0 && result.data.node != null && result.data.info != null) {
+                            $('#node-info-modal .modal-title').text(result.data.node.name);
                             $('#node-info-modal #node-info-json').text(result.data.info.ssjson);
                             $('#node-info-modal #node-info-url').val(result.data.info.ssurl);
                             $('#node-info-modal #node-info-qrcode').empty().qrcode({width:450,height:450,text: result.data.info.ssurl});

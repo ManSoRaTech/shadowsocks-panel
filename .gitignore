@@ -34,3 +34,4 @@ Data/**/*
 # Front-end Resources (compiled)
 Public/**/*
 !Public/**/*.php
+Resource/Xenon/**/*
