@@ -22,7 +22,8 @@
                                     操作 <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:getNodeInfo('{$node->id}')">节点信息</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:getSSNodeInfo('{$node->id}')">节点信息（SS）</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:getSSRNodeInfo('{$node->id}')">节点信息（SSR）</a></li>
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:addToAndroid('{$node->id}')">添加至安卓客户端</a></li>
                                 </ul>
                             </div>
@@ -43,7 +44,7 @@
             </loop>
             <!-- /.pro-box-begin -->
             <loop variable="$nodeVip" key="$key" value="$node">
-                <if condition="$user->enable == 1 && ($user->plan == 'VIP' || $user->plan == 'SVIP')">
+                <if condition="$user->plan == 'VIP' || $user->plan == 'SVIP' ">
                     <div class="col-sm-6">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -115,7 +116,7 @@
                                     <!-- /.box -->
                                     <div class="box box-solid">
                                         <div class="box-header">
-                                            <h4 class="box-title">配置地址</h4>
+                                            <h4 class="box-title">SS链接</h4>
                                         </div>
                                         <!-- /.box-header -->
                                         <div class="box-body">
@@ -163,7 +164,7 @@
             }
             var modal_default_body = jQuery('#node-info-modal .modal-body').html();
 
-            function getNodeInfo(nodeId) {
+            function getSSNodeInfo(nodeId) {
                 $("#node-info-modal .modal-body").html(modal_default_body);
                 reset(false);
                 $.ajax({
@@ -178,10 +179,42 @@
                             return;
                         }
                         if(result.data.error == 0 && result.data.node != null && result.data.info != null) {
+                            $('#node-info-modal #node-info-json').text(result.data.info.ssjson);
+                            $('#node-info-modal #node-info-url').val(result.data.info.ssurl);
+                            $('#node-info-modal #node-info-qrcode').empty().qrcode({width:450,height:450,text: result.data.info.ssurl});
+                            reset(true);
+                        } else {
+                            $('#node-info-modal').modal('hide');
+                            showToastr(result.data.message, 0);
+                        }
+
+                    },
+                    error: function (Xhr) {
+                        showToastr("出现未知错误，请重试或联系管理员", 0);
+                    }
+                });
+                $('#node-info-modal').modal('show', {backdrop: 'static'});
+            }
+
+            function getSSRNodeInfo(nodeId) {
+                $("#node-info-modal .modal-body").html(modal_default_body);
+                reset(false);
+                $.ajax({
+                    url: "/node/getSsrInfo.json",
+                    method: "POST",
+                    dataType: "json",
+                    data: {id: nodeId},
+                    success: function (result) {
+                        if(result.code != 200){
+                            $('#node-info-modal').modal('hide');
+                            showToastr(result.message, 0, 3000, '系统错误');
+                            return;
+                        }
+                        if(result.data.error == 0 && result.data.node != null && result.data.info != null) {
                             $('#node-info-modal .modal-title').text(result.data.node.name);
                             $('#node-info-modal #node-info-json').text(result.data.info.ssjson);
                             $('#node-info-modal #node-info-url').val(result.data.info.ssurl);
-                            $('#node-info-modal #node-info-qrcode').empty().qrcode({width:200,height:200,text: result.data.info.ssurl});
+                            $('#node-info-modal #node-info-qrcode').empty().qrcode({width:450,height:450,text: result.data.info.ssurl});
                             reset(true);
                         } else {
                             showToastr(result.data.message, 0);

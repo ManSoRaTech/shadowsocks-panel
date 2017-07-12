@@ -27,10 +27,8 @@ class Utils
         if (!preg_match($pattern, $address)) {
             return "邮箱地址格式不正确";
         }
-        /*
         if (is_numeric(stristr($chkMailAddress, "qq.com")))
             return "该邮箱地址不被支持,请更换";
-        */
         if (User::getUserByEmail($address) != false) {
             return "邮箱地址已经被注册使用";
         }
@@ -417,5 +415,9 @@ class Utils
     public static function gb()
     {
         return self::GB;
+    }
+
+    public static function toJsString($value){
+        echo "'". $value . "'";
     }
 }

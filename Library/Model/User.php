@@ -50,6 +50,9 @@ class User extends Model
     public $payTime; // 上次支付时间
     public $expireTime; // 到期时间
     public $method; // 自定义加密方式
+    public $protocol;
+    public $obfs;
+    public $obfsparam;
     /** @ignore */
     public $lastActive = TIMESTAMP;
     /** @ignore */
@@ -210,14 +213,14 @@ class User extends Model
         }
     }
 
-    /**
-     * update user enable status
+     /**
+      *根据期限判断是否enable账户并执行
      */
     public function updateUserStatus()
     {
         // check user transfer and expireTime
         if ($this->getUseTransfer() < $this->transfer && $this->expireTime < time()) {
-            // sett enable = 1
+            // 设置账户 enable = 1
             $this->enable = 1;
             $this->save();
         }

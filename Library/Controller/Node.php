@@ -4,6 +4,7 @@
  * A simple Shadowsocks management system
  * Author: Sendya <18x@loacg.com>
  */
+
 namespace Controller;
 
 
@@ -38,11 +39,21 @@ class Node
         $result = array('error' => -1, 'message' => 'Request failed');
         $user = User::getUserByUserId(User::getCurrent()->uid);
         $node = MNode::getNodeById($id);
-        $method = $node->method;
-        if($node->custom_method == 1 && $user->method != '' && $user->method != null) {
-            $method = $user->method;
-        }
-        $info = self::nodeDetail($node->server, $user->port, $user->sspwd, $method, $node->name);
+        if ($node->custom_method == 1) {
+            if ($user->protocol != '' || $user->obfs != '' || $user->obfsparam != '')
+                return array('error' => -1, 'message' => 'SSR字段已设置，无法导出SS节点信息！');
+            else
+                $method = $user->method;
+        } else
+            $method = $node->method;
+
+        // generate ss detail
+        $ssurl = $method . ":" . $user->sspwd . "@" . $node->server . ":" . $user->port;
+        $ssurl = "ss://" . base64_encode($ssurl);
+        $ssjsonAry = array("server" => $node->server, "server_port" => $user->port, "password" => $user->sspwd, "timeout" => 600, "method" => $method, "remarks" => $node->name);
+        $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
+        $info = array("ssurl" => $ssurl, "ssjson" => $ssjson);
+
         if (self::verifyPlan($user->plan, $node->type)) {
             $result = array('error' => 0, 'message' => '获取成功', 'info' => $info, 'node' => $node);
         } else {
@@ -56,6 +67,54 @@ class Node
         $ssurl = $method . ":" . $password . "@" . $server . ":" . $server_port;
         $ssurl = "ss://" . base64_encode($ssurl);
         $ssjsonAry = array("server" => $server, "server_port" => $server_port, "password" => $password, "timeout" => 600, "method" => $method, "remarks" => $name);
+        $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
+        return array("ssurl" => $ssurl, "ssjson" => $ssjson);
+    }
+
+    //获取ssr信息
+    public function getSsrInfo()
+    {
+        $id = trim($_REQUEST['id']);
+        $result = array('error' => -1, 'message' => 'Request failed');
+        $user = User::getUserByUserId(User::getCurrent()->uid);
+        $node = MNode::getNodeById($id);
+
+        if ($node->custom_method == 1) {
+            //if($user->method != '' && $user->method != null)
+            $method = $user->method;
+            $protocol = $user->protocol;
+            $obfs = $user->obfs;
+            $obfsparam = $user->obfsparam;
+        } else {
+            $method = $node->method;
+            $protocol = $node->protocol;
+            $obfs = $node->obfs;
+            $obfsparam = $node->obfsparam;
+        }
+
+        // generate ssr detail
+        $ssurl = $node->server . ":" . $user->port . ":" . $protocol . ":" . $method . ":" . $obfs . ":" . Template::base64_url_encode($user->sspwd) . "/?obfsparam=" . Template::base64_url_encode($obfsparam) . "&remarks=" . Template::base64_url_encode($node->name) . "&group=" . Template::base64_url_encode(ManSora);
+        $ssurl = "ssr://" . Template::base64_url_encode($ssurl);
+        $ssjsonAry = array("server" => $node->server, "server_port" => $user->port, "password" => $user->sspwd, "timeout" => 600, "method" => $method, "protocol" => $protocol, "obfs" => $obfs, "obfsparam" => $obfsparam, "group" => "ManSora", "remarks" => $node->name);
+        $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
+
+        $info = array("ssurl" => $ssurl, "ssjson" => $ssjson);
+        if (self::verifyPlan($user->plan, $node->type)) {
+            $result = array('error' => 0, 'message' => '获取成功', 'info' => $info, 'node' => $node);
+        } else {
+            $result = array('error' => -1, 'message' => '你不是 VIP, 无法使用高级节点！');
+        }
+        return $result;
+    }
+
+    private static function nodeSsrDetail($server, $server_port, $password, $name, $enable_custom_method = 0, $method = '', $protocol = '', $obfs = '', $obfaparam = '')
+    {
+        if ($enable_custom_method == 1) {
+
+        }
+        $ssurl = $server . ":" . $server_port . ":" . "auth_sha1_v4" . ":" . $method . ":" . "tls1.2_ticket_auth" . ":" . Template::base64_url_encode($password) . "/?obfsparam=" . Template::base64_url_encode('intl.aliyun.com') . "&remarks=" . Template::base64_url_encode($name) . "&group=" . Template::base64_url_encode(ManSora);
+        $ssurl = "ssr://" . Template::base64_url_encode($ssurl);
+        $ssjsonAry = array("server" => $server, "server_port" => $server_port, "password" => $password, "timeout" => 600, "method" => $method, "protocol" => "auth_sha1_v4", "obfs" => "tls1.2_ticket_auth", "obfsparam" => "intl.aliyun.com", "group" => "ManSora", "remarks" => $name);
         $ssjson = json_encode($ssjsonAry, JSON_PRETTY_PRINT);
         return array("ssurl" => $ssurl, "ssjson" => $ssjson);
     }

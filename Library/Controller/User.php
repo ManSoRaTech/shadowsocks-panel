@@ -8,6 +8,7 @@
 namespace Controller;
 
 use Core\Template;
+use Helper\Option;
 use Model\User as MUser;
 use Model\Invite;
 use Model\Node;
@@ -29,8 +30,8 @@ class User
         $user = MUser::getUserByUserId(MUser::getCurrent()->uid);
         $json = json_decode($user->forgePwdCode, true);
         $flag = true;
-        if(!$json || $json['verification']==null) {
-            $flag= false;
+        if (!$json || $json['verification'] == null) {
+            $flag = false;
         }
         Template::putContext('enable_status', $user->enable == 1 ? '启用' : '停用');
         Template::putContext('is_verification', $flag);
@@ -69,7 +70,9 @@ class User
     public function password()
     {
         $user = MUser::getUserByUserId(MUser::getCurrent()->uid);
+        $data['user'] = $user;
 
+        // modify password
         if ($_POST['nowpwd'] != null && $_POST['pwd'] != null) {
             $result = array('error' => 1, 'message' => '密码修改失败.');
             $nowpwd = $_POST['nowpwd'];
@@ -94,7 +97,10 @@ class User
             $result['message'] = "修改密码成功, 请重新登录";
             return $result;
         } else {
-            Template::putContext('user', $user);
+            $data['custom_method_list'] = json_decode(Option::get('custom_method_list'), true);
+            $data['custom_protocol_list'] = json_decode(Option::get('custom_protocol_list'), true);
+            $data['custom_obfs_list'] = json_decode(Option::get('custom_obfs_list'), true);
+            Template::setContext($data);
             Template::setView("panel/change_password");
         }
     }
@@ -130,7 +136,7 @@ class User
         $user = MUser::getCurrent();
         if ($_POST['method'] != null) {
             $method = null;
-            if($_POST['method'] != '-1') {
+            if ($_POST['method'] != '-1') {
                 $method = htmlspecialchars(trim($_POST['method']));
             }
             $user = MUser::getUserByUserId($user->uid);
@@ -164,8 +170,6 @@ class User
             $user->enable = 1;
         }
         $user->save();
-
         return array('enable' => $user->enable, 'message' => '状态检测完毕');
     }
-
 }
