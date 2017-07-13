@@ -116,6 +116,10 @@
                 <div  class="h1 text-purple text-bold">连接信息</div>
                 端口：<code>{$user->port}</code><br />
                 密码：<div id="showpwd" style="display: inline"><b>点击显示密码</b></div><br />
+                加密方式：<code>{$user->method}</code><br />
+                协议：<code>{$user->protocol}</code><br />
+                混淆：<code>{$user->obfs}</code><br />
+                混淆参数：<code>{$user->obfsparam}</code><br />
                 <button class="btn btn-sm btn-info" id="plan-level">{$user->getPlan()}</button>   &nbsp;
                 <button class="btn btn-sm btn-secondary" id="updatePlan"> 升级套餐 </button>   &nbsp;
                 <button class="btn btn-sm btn-secondary" id="planList"> 套餐详情 </button><br /><br />
