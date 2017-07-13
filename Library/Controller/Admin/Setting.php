@@ -21,11 +21,6 @@ use Model\User;
 class Setting
 {
 
-    public function index()
-    {
-        $this->system();
-    }
-
     /**
      * 系统设置 页面
      */
@@ -118,10 +113,21 @@ class Setting
     public function saveTransfer()
     {
         $custom_transfer_level['A'] = intval($_POST['transfer-A']);
+        //月卡套餐
         $custom_transfer_level['B'] = intval($_POST['transfer-B']);
         $custom_transfer_level['C'] = intval($_POST['transfer-C']);
         $custom_transfer_level['D'] = intval($_POST['transfer-D']);
         $custom_transfer_level['VIP'] = intval($_POST['transfer-VIP']);
+        //季卡套餐
+        $custom_transfer_level['B1'] = intval($_POST['transfer-B1']);
+        $custom_transfer_level['C1'] = intval($_POST['transfer-C1']);
+        $custom_transfer_level['D1'] = intval($_POST['transfer-D1']);
+        $custom_transfer_level['VIP1'] = intval($_POST['transfer-VIP1']);
+        //年卡套餐
+        $custom_transfer_level['B2'] = intval($_POST['transfer-B2']);
+        $custom_transfer_level['C2'] = intval($_POST['transfer-C2']);
+        $custom_transfer_level['D2'] = intval($_POST['transfer-D2']);
+        $custom_transfer_level['VIP2'] = intval($_POST['transfer-VIP2']);
 
         Option::set('custom_transfer_level', json_encode($custom_transfer_level));
         Option::init();
@@ -137,11 +143,21 @@ class Setting
     public function savePlanCustom()
     {
         $custom_plan_name['A'] = $_POST['setting-A'];
+        //月卡套餐
         $custom_plan_name['B'] = $_POST['setting-B'];
         $custom_plan_name['C'] = $_POST['setting-C'];
         $custom_plan_name['D'] = $_POST['setting-D'];
         $custom_plan_name['VIP'] = $_POST['setting-VIP'];
-        $custom_plan_name['Z'] = $_POST['setting-Z'];
+        //季卡套餐
+        $custom_plan_name['B1'] = $_POST['setting-B1'];
+        $custom_plan_name['C1'] = $_POST['setting-C1'];
+        $custom_plan_name['D1'] = $_POST['setting-D1'];
+        $custom_plan_name['VIP1'] = $_POST['setting-VIP1'];
+        //年卡套餐
+        $custom_plan_name['B2'] = $_POST['setting-B2'];
+        $custom_plan_name['C2'] = $_POST['setting-C2'];
+        $custom_plan_name['D2'] = $_POST['setting-D2'];
+        $custom_plan_name['VIP2'] = $_POST['setting-VIP2'];
 
         Option::set('custom_plan_name', json_encode($custom_plan_name));
         Option::init();

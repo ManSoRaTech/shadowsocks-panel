@@ -38,7 +38,7 @@ class Support
 
     public function help()
     {
-        Response::redirect("http://www.ishadowsocks.org/");
+        Response::redirect("help.htm");
     }
-
+    
 }

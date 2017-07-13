@@ -77,6 +77,8 @@ class Card
                         $expireTime = $user->expireTime + (3600 * 24 * $cardDay); // 到期时间 = 当前账户到期时间+卡片时间
                     }
                 }
+                $user->flow_up = 0;
+                $user->flow_down = 0;
                 $user->expireTime = $expireTime;
                 $user->plan = $card->info;
                 $user->transfer = Utils::GB * intval($custom_transfer_level[$user->plan]);

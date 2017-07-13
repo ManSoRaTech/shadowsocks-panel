@@ -101,9 +101,16 @@ class Auth
     }
 
     /**
+     * 登陆页面
+     */
+    public function register() {
+        Template::setView('panel/register');
+    }
+
+    /**
      * @JSON
      */
-    public function register()
+    public function doRegister()
     {
         $result = array('error' => 1, 'message' => '注册失败');
         $email = strtolower(trim($_POST['r_email']));
