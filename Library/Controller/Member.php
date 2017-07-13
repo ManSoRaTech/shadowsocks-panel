@@ -67,7 +67,6 @@ class Member
 
         Template::setContext($data);
         Template::setView('panel/member');
-
     }
 
     /**

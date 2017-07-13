@@ -19,9 +19,6 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-4">
-                                <form action="${payment_url}" method="post" name="apply_pay">
-
-                                </form>
                                 <div class="form-group">
                                     <div class="xe-widget xe-progress-counter ">
 
@@ -48,10 +45,19 @@
                                             <strong>{$transfer}GB 流量</strong><br/>
                                             <strong>共需支付 {$money} 元</strong><br/>
                                         </div>
-
-                                        <div class="xe-lower">
-                                            <button class="btn btn-white btn-buy">确定支付</button>
-                                        </div>
+                                        <form name="cashU_payment_info" action="https://www.payssion.com/payment/create.html" method="post">
+										    <input type="hidden" name="api_key" value={$api_key}>
+										    <input type="hidden" name="api_sig" value={$api_sig}>
+										    <input type="hidden" name="pm_id" value={$pm_id}>
+										    <input type="hidden" name="order_id" value={$order_id}>
+										    <input type="hidden" name="description" value="成功交易">
+										    <input type="hidden" name="amount" value={$money}>
+										    <input type="hidden" name="currency" value="CNY">
+										    <input type="hidden" name="return_url" value={$return_url}>
+										    <div class="xe-lower">
+	                                            <button class="btn btn-white btn-buy" type ="submit" value ="Submit">确定支付</button>
+	                                        </div>
+										</form>
 
                                     </div>
                                 </div>
@@ -83,12 +89,4 @@
         <import template="/panel/_copyright" />
     </div>
 </div>
-<script type="text/javascript">
-    // btn-buy
-    jQuery(document).ready(function($) {
-        $("btn-buy").off().on('click', function () {
-
-        });
-    });
-</script>
 <import template="/panel/_footer" />

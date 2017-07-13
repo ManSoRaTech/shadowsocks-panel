@@ -90,6 +90,15 @@ class Template
         self::$context[$name] = Escape::perform($value, $escapeType);
     }
 
+//    public static function base64_url_encode($input) { 
+//        return rtrim(strtr(base64_encode($input), '+/', '-_'), '=');
+//    }
+
+    public static function base64_url_encode($input)
+    {
+        return strtr(base64_encode($input), array('+' => '-', '/' => '_', '=' => ''));
+    }
+
     public static function getContext()
     {
         return self::$context;

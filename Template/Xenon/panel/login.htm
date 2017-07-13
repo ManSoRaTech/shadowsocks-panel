@@ -1,281 +1,283 @@
-<import template="/panel/_head" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <base href="{BASE_URL}"/>
+    <!-- Favicon -->
+    <link href="img/fav.png" rel="shortcut icon" type="image/x-icon"/>
 
-<body class="page-body login-page" style="padding-top: 80px;">
-<div class="login-container">
-    <div class="row">
-        <div class="col-sm-6">
-            <!-- Errors container -->
-            <div class="errors-container">
+    <!-- Title -->
+    <title>Login - ManSora Cloud Service</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom icon Fonts -->
+    <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Main CSS -->
+    <link href="css/theme.css" rel="stylesheet">
+    <link href="css/blue.css" rel="stylesheet" id="style_theme">
+    <link href="css/sweetalert.css" rel="stylesheet">
+    <script src="js/sweetalert.min.js"></script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<!-- Body -->
+<body>
+<!-- Pre Loader -->
+<div class="loading">
+    <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+    </div>
+</div>
+<!-- Scroll to Top -->
+<a id="scroll-up" ><i class="fa fa-angle-up"></i></a>
+<!-- Top Bar  -->
+<div class="konnect-info">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Top bar Left -->
+            <div class="col-md-6 col-sm-6 hidden-xs">
+                <ul>
+                    <li><i class="fa fa-paper-plane" aria-hidden="true"></i> support@ime.moe </li>
+                </ul>
             </div>
-            <!-- Add class "fade-in-effect" for login form effect -->
-            <form method="post" role="form" id="login" class="login-form fade-in-effect" autocomplete="off">
-
-                <div class="login-header">
-                    <a href="/" class="logo">
-                        <img src="{RESOURCE}/images/logo@2x.png" alt="" width="80" />
-                        <span>log in</span>
-                    </a>
-                    <p>登录，然后变成一只猫!</p>
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control input-dark" name="email" id="email" autocomplete="off" placeholder="电子邮件" />
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control input-dark" name="passwd" id="passwd" autocomplete="off" placeholder="密码" />
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" class="cbr" id="remember_me" value="week" checked>
-                        保持登录(7天内免登录)
-                    </label>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-dark  btn-block text-left">
-                        <i class="fa-lock"></i>
-                        登 录
-                    </button>
-                </div>
-                <div class="login-footer">
-                    <a href="/invite">获取邀请码</a>&nbsp;
-                    <a href="/auth/forgePwd">找回密码?</a>
-                    <div class="info-links">
-                        <a href="/support/tos">Tos</a>
-                    </div>
-                </div>
-            </form>
-            <form method="post" role="form" id="register" class="login-form fade-in-effect" autocomplete="off" style="display: none;">
-                <div class="login-header">
-                    <a href="/" class="logo">
-                        <img src="{RESOURCE}/images/logo@2x.png" alt="" width="80" />
-                        <span>Register</span>
-                    </a>
-                    <p>注册，然后变成一只猫!</p>
-                </div>
-
-                <div class="form-group">
-                    <input type="text" class="form-control input-dark" name="r_email" id="r_email" autocomplete="off" placeholder="电子邮件" />
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control input-dark" name="r_user_name" id="r_user_name" autocomplete="off" placeholder="昵称，可不填" />
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control input-dark" name="r_passwd" id="r_passwd" autocomplete="off" placeholder="密码" />
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control input-dark" name="r_passwd2" id="r_passwd2" autocomplete="off" placeholder="重复密码" />
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control input-dark" name="r_invite" id="r_invite" value="{($_GET['invite'])}" autocomplete="off" placeholder="邀请码" />
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-info btn-block text-left">
-                        <i class="fa-user"></i>
-                        注 册
-                    </button>
-                </div>
-                <div class="form-group">
-                    <a type="button" class="btn btn-dark btn-block text-left login-button" href="/auth/login<php>if($_GET['invite'] != '') echo '?invite='. $_GET['invite'];</php>#login">
-                        <i class="fa-lock"></i>
-                        返 回 登 录
-                    </a>
-                    <a type="button" class="btn btn-dark btn-block text-left login-button" href="/invite">
-                        <i class="fa-lock"></i>
-                        获 取 邀 请 码
-                    </a>
-                </div>
-            </form>
-            <div class="external-login">
-                <a href="/auth/login<php>if($_GET['invite'] != '') echo '?invite='. $_GET['invite'];</php>#register"  class="facebook register-button">
-                    <i class="fa-user"></i>
-                    注册账号
-                </a>
+            <!-- Top bar Right -->
+            <div class="col-md-6 col-sm-6">
+                <ul class="konnect-float-right">
+                    <li><a href="auth/login"><i class="fa fa-user-o" aria-hidden="true"></i> 登入 </a></li>
+                    <li><a href="auth/register"><i class="fa fa-file-text-o" aria-hidden="true"></i> 注册 </a></li>
+                    <li><a href="invite"><i class="fa fa-eye" aria-hidden="true"></i> 邀请码 </a></li>
+                    <li class="li-last hidden-xs hidden-sm"><a target="_blank" href="javascript:;"><i class="fa fa-comment-o" aria-hidden="true"></i> Chat Now</a></li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
-<script type="text/javascript">
+
+<!-- Main Navigation + LOGO Area -->
+<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <!-- Responsive Menu -->
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <img src="img/icons/menu.png" alt="menu" width="40"> </button>
+            <!-- Logo -->
+            <a class="navbar-brand" href="index.html"><img class="logo-change" src="img/logo.png" alt="logo"></a> </div>
+
+        <!-- Menu Items -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="index" class="dropdown">首 页 <i class="dropdown-toggle" aria-hidden="true"></i></a>
+                </li>
+                <li><a href="https://status.ime.moe/"target="_blank">服务器状态</a></li>
+                <li class="dropdown"><a href="pages.html" class="dropdown-toggle" data-toggle="dropdown">资源与帮助<i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="https://downloads.ime.moe/"target="_blank">资源下载</a></li>
+                        <li><a href="faq.html">常见问题</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a href="contact.html" class="dropdown-toggle" data-toggle="dropdown">使用协议<i class="fa fa-angle-down" aria-hidden="true"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="terms-and-conditions.html">服务条款</a></li>
+                        <li><a href="privacy-policy.html">隐私政策</a></li>
+                    </ul>
+                </li>
+                </li>
+                <li><a href="about.html">关于我们</a></li>
+                <li class="search-icon"><a href="javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i></a>
+                    <div class="search-form">
+                        <form class="navbar-form" role="search">
+                            <div class="input-group add-on">
+                                <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+
+<!-- Login page-->
+<section class="section-bottom-border login-signup">
+    <div class="container">
+        <div class="row">
+            <div class="login-main template-form">
+                <h4>Please Log In, or <a href="auth/register">Sign Up</a></h4>
+                <div class="template-space"></div>
+                <div class="login-or">
+                    <hr class="hr-or">
+                    <span class="span-or">Login</span> </div>
+
+                    <div class="form-group">
+                        <label for="inputUsernameEmail">Username or email</label>
+                        <input type="text" class="form-control" id="inputUsernameEmail">
+                    </div>
+                    <div class="form-group"> <a class="pull-right" href="auth/forgePwd">Forgot password?</a>
+                        <label for="inputPassword">Password</label>
+                        <input type="password" class="form-control" id="inputPassword">
+                    </div>
+                    <div class="checkbox pull-right">
+                        <label><input type="checkbox" id="remember_me">Remember me </label>
+                    </div>
+                    <button type="submit" class="btn btn btn-primary btn-login"> Log In </button>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--Main footer-->
+<section class="main-footer">
+    <div class="container">
+        <div class="row">
+            <!--footer widget one-->
+            <div class="col-md-4 col-sm-6">
+                <div class="footer-widget">
+                    <h3>Support</h3>
+                    <p>Email: <a href="mailto:support@ime.moe">support@ime.moe</a></p>
+                </div>
+            </div>
+            <!--/ footer widget one-->
+
+            <!--footer widget Two-->
+            <div class="col-md-4 col-sm-6">
+                <div class="footer-widget quicl-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><i class="fa  fa-angle-right"></i> <a href="about.html">关于我们</a></li>
+                        <li><i class="fa  fa-angle-right"></i> <a href="hosting.html">套餐资费</a></li>
+                        <li><i class="fa  fa-angle-right"></i> <a href="support.html">在线支持</a></li>
+                        <li><i class="fa  fa-angle-right"></i> <a href="faq.html">帮助与支持</a></li></ul>
+                </div>
+            </div>
+            <!--/ footer widget Two-->
+
+            <!--footer widget Three-->
+            <div class="col-md-4 col-sm-6">
+                <div class="footer-widget payments">
+                    <h3>Payments We Accept</h3>
+                    <p><img src="img/icons/payments/alipay.png" alt="payment"></p>
+                </div>
+            </div>
+
+            <!--/ footer widget thre-->
+        </div>
+    </div>
+</section>
+<!--/Main Footer-->
+
+<!--copyright Footer-->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 text-left">
+
+                <!--Footer Social Icons-->
+                <div class="contact-social">
+                    <p><a href="//github.com/ManSoRaTech"target="_blank"> <i class="fa fa-github"></i> </a> <a href="//twitter.com/ManSoRa_Mk"target="_blank"> <i class="fa fa-twitter"></i> </a></p>
+                </div>
+            </div>
+
+            <!-- Footer Copy rights-->
+            <div class="col-md-6 col-sm-6 text-right">
+                <p> &copy; 2017 ManSora Technologies Co.,Ltd. All Rights Reserved. </p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- jQuery -->
+
+
+<script src="assets/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Theme JavaScript -->
+<script src="js/default.js"></script>
+<script>
     jQuery(document).ready(function($) {
-        setTimeout(function() {
-            $(".fade-in-effect").addClass("in");
-        }, 1);
-        $(".register-button").click(function(){$("#login").hide(); $(".external-login").hide(); $("#register").show(); document.title = document.title.replace('login', 'register');});
-        $(".login-button").click(function(){$("#login").show(); $(".external-login").show(); $("#register").hide();document.title = document.title.replace('register', 'login');});
-        console.debug(location.hash);
-        if (location.hash == '#register') {
-            $(".register-button").trigger("click");
-        } else {
-            $(".login-button").trigger("click");
-        }
 
-        var opts = {
-            closeButton: true,
-            debug: false,
-            positionClass: "toast-top-full-width",
-            onclick: null,
-            showDuration: "300",
-            hideDuration: "1000",
-            timeOut: "5000",
-            extendedTimeOut: "1000",
-            showEasing: "swing",
-            hideEasing: "linear",
-            showMethod: "fadeIn",
-            hideMethod: "fadeOut"
-        };
+        $('.btn-login').off().on('click', function() {
+            var that = $(this);
+            that.attr('disabled', true);
 
-        $("form#login").validate({
-            rules: {
-                email: {required: true},
-                passwd: {required: true}},
-            messages: {
-                email: {required: "请输入用户名."},
-                passwd: {required: "请输入密码."}},
-            submitHandler: function(form) {
-                $('button[type="submit"]').attr('disabled',"true");
-                show_loading_bar(70);
-                $.ajax({
-                    url: "/auth/login.json",
-                    method: "POST",
-                    dataType: "json",
-                    data: {
-                        do_login: true,
-                        email: $(form).find("#email").val(),
-                        passwd: $(form).find("#passwd").val(),
-                        remember_me: document.getElementById('remember_me').checked==true ? 'week' : ''
-                    },
-                    success: function(result) {
-                        console.log("in success");
-                        $('button[type="submit"]').removeAttr("disabled");
-                        show_loading_bar({
-                            delay: .5,
-                            pct: 100,
-                            finish: function() {
-                                if (result.code == 200) {
-                                    if(result.data.error == 0) {
-                                        toastr.success(result.data.message, "提示", opts);
-                                        setTimeout("window.location.href = '/member'", 2000);
-                                    } else {
-                                        toastr.error(result.data.message, "提示!", opts);
-                                        $('#email').select();
-                                    }
-                                } else {
-                                    toastr.error("请求服务器失败，请稍后重试<br /> 错误信息：" + result.message, "无效登录!", opts);
-                                    $('#email').select();
-                                }
-                            }
-                        });
-                    },
-                    error: function(jqXHR) {
-                        show_loading_bar({
-                            delay: .5,
-                            pct: 100,
-                            finish: function() {
-                                toastr.error('程序出现致命错误，无法连接到登录服务器<br/>可能的问题：<br/>&nbsp;&nbsp;1.数据库连接失败<br/>&nbsp;&nbsp;2.请求地址API错误', "错误!", opts);
-                                $('button[type="submit"]').removeAttr("disabled");
-                                setTimeout("window.location.reload()", 2000);
-                            }
-                        });
-                    }
-                });
+            if ($('#inputUsernameEmail').val() == '' || $('#inputPassword').val() == '') {
+                swal("Oops...", "请输入账号和密码", "error");
+                that.removeAttr("disabled");
+                return false;
             }
-        });
-        $("form#register").validate({
-            rules: {
-                r_email: {
-                    required: true
+
+            $.ajax({
+                url: "/auth/login.json",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    do_login: true,
+                    email: $('#inputUsernameEmail').val(),
+                    passwd: $('#inputPassword').val(),
+                    remember_me: document.getElementById('remember_me').checked==true ? 'week' : ''
                 },
-                r_passwd: {
-                    required: true
-                },
-                r_passwd2: {
-                    required: true
-                },
-                r_invite: {
-                    required: true
-                }
-            },
-            messages: {
-                r_email: {
-                    required: "请输入用户名."
-                },
-                r_passwd: {
-                    required: "请输入密码."
-                },
-                r_passwd2: {
-                    required: "请再次输入密码"
-                },
-                r_invite: {
-                    required: "没邀请码注册个球啊?"
-                }
-            },
-            submitHandler: function(form) {
-                $('button[type="submit"]').attr('disabled',"true");
-                show_loading_bar(70);
-                var opts = {
-                    closeButton: true,
-                    debug: false,
-                    positionClass: "toast-top-full-width",
-                    onclick: null,
-                    showDuration: "300",
-                    hideDuration: "1000",
-                    timeOut: "5000",
-                    extendedTimeOut: "1000",
-                    showEasing: "swing",
-                    hideEasing: "linear",
-                    showMethod: "fadeIn",
-                    hideMethod: "fadeOut"
-                };
-                if ($("#r_passwd").val() == "" || $("#r_passwd").val() != $("#r_passwd2").val()) {
-                    toastr.error("两次密码不一致", "错误!", opts);
-                    return;
-                }
-                $.ajax({
-                    url: "/auth/register.json",
-                    method: "POST",
-                    dataType: "json",
-                    data: {
-                        do_register: true,
-                        r_email: $(form).find("#r_email").val(),
-                        r_passwd: $(form).find("#r_passwd").val(),
-                        r_passwd2: $(form).find("#r_passwd2").val(),
-                        r_user_name: $(form).find("#r_user_name").val(),
-                        r_invite: $(form).find("#r_invite").val()
-                    },
-                    success: function(result) {
-                        $('button[type="submit"]').removeAttr("disabled");
-                        show_loading_bar({
-                            delay: .5,
-                            pct: 100,
-                            finish: function() {
-                                if (result.code == 200) {
-                                    if(result.data.error == 0) {
-                                        toastr.success(result.data.message, "提示!", opts);
-                                        setTimeout('$(".login-button").trigger("click");', 2000);
-                                    } else {
-                                        toastr.error(result.data.message, "提示!", opts);
-                                        $('#email').select();
-                                    }
-                                }  else {
-                                    toastr.error("请求服务器失败，请稍后重试。<br /> 错误信息：" + result.message, "系统错误!", opts);
-                                    $('#email').select();
-                                }
-                            }
-                        });
-                    },
-                    error:function(jqXHR){
-                        $('button[type="submit"]').removeAttr("disabled");
-                        show_loading_bar({
-                            delay: .5,pct: 100,finish: function() {
-                                toastr.error("发生错误：与服务器的请求失败", "哈哈哈哈哈错误了!", opts);
-                            }
-                        });
+                success: function(result) {
+
+                    if (result != null) {
+                        if (result.data != null && result.data.error == 1) {
+                            swal({
+                                title: '错误',
+                                text: result.data.message,
+                                timer: 2000,
+                                showConfirmButton: false,
+                                html: true
+                            });
+                        } else {
+                            swal({
+                                title: '提示',
+                                text: result.data.message,
+                                timer: 2000,
+                                showConfirmButton: false,
+                                html: true
+                            });
+                            setTimeout("window.location.href = '/member'", 2000);
+                        }
                     }
-                });
-            }
+                    that.removeAttr("disabled");
+                },
+                error: function(jqXHR) {
+                    swal({
+                        title: '错误',
+                        text: '程序出现致命错误，无法连接到登录服务器<br/>可能的问题：1.数据库连接失败&nbsp;2.请求地址API错误',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    that.removeAttr("disabled");
+                }
+            });
         });
-        $("form#login .form-group:has(.form-control):first .form-control").focus();
-        <if condition="$globalMessage[0]!=null && $globalMessage[0]->enable==1">
-                toastr.success("{($globalMessage[0]->content)}", "提示", opts);
-        </if>
+
     });
 </script>
-<import template="/panel/_footer" />
+
+
+</body>
+</html>

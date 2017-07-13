@@ -39,11 +39,10 @@ class Node
         $result = array('error' => -1, 'message' => 'Request failed');
         $user = User::getUserByUserId(User::getCurrent()->uid);
         $node = MNode::getNodeById($id);
+        if ((($user->obfs !== 'plain') and !strstr($user->obfs, '_compatible')) || (($user->protocol !== 'origin') and !strstr($user->protocol, '_compatible')))
+            return array('error' => -1, 'message' => 'SSR协议不兼容，无法导出SS节点信息！');
         if ($node->custom_method == 1) {
-            //if ((strpos($user->obfs, '_compatible') !== false) || (strpos($user->protocol, '_compatible') !== false))
-                //return array('error' => -1, 'message' => 'SSR字段已设置，无法导出SS节点信息！');
-            //else
-                $method = $user->method;
+            $method = $user->method;
         } else
             $method = $node->method;
 
@@ -81,6 +80,11 @@ class Node
             $obfs = $node->obfs;
             $obfsparam = $node->obfsparam;
         }
+
+        $pos = strstr($protocol, '_compatible');
+        $protocol = substr($protocol, 0, strlen($protocol) - strlen($pos));
+        $pos = strstr($obfs, '_compatible');
+        $obfs = substr($obfs, 0, strlen($obfs) - strlen($pos));
 
         // generate ssr detail
         $ssurl = $node->server . ":" . $user->port . ":" . $protocol . ":" . $method . ":" . $obfs . ":" . Template::base64_url_encode($user->sspwd) . "/?obfsparam=" . Template::base64_url_encode($obfsparam) . "&remarks=" . Template::base64_url_encode($node->name) . "&group=" . Template::base64_url_encode(ManSora);
