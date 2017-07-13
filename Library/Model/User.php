@@ -213,8 +213,8 @@ class User extends Model
         }
     }
 
-     /**
-      *根据期限判断是否enable账户并执行
+    /**
+     *根据期限判断是否enable账户并执行
      */
     public function updateUserStatus()
     {

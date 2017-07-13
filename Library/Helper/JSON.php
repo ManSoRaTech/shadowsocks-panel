@@ -89,7 +89,8 @@ class JSON implements IFilter
                 $this->allowCallback = true;
             }
             if (strpos($docComment, '@JSON') === false) {
-                throw new Error('The request URL is not available', 403);
+                $this->allowCallback = true;
+                //throw new Error('The request URL is not available', 403);
             }
         }
     }
