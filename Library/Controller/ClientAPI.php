@@ -170,9 +170,7 @@ class ClientAPI
         );
 
         if ($user->expireTime > time()) {
-            if ($announcement = Option::get('ssr_client_announcement')) {
-                $json['announcement'] = $announcement;
-            }
+            $json['announcement'] = Option::get('ssr_client_announcement');
 
             $nodes = Node::getNodeArray();
             for ($i = 0; $i < count($nodes); $i++) {
@@ -182,7 +180,6 @@ class ClientAPI
                         continue;
                     }
                 }
-                
                 $json['servers'][$i] = array(
                     'remarks' => ($node->type == 1 ? '[VIP] ' : '') . $node->name,
                     'server' => $node->server);
