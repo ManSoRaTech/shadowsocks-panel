@@ -18,6 +18,9 @@ class Node extends Model
     public $type; // 类型 0 普通 1 vip
     public $server; // Server地址
     public $method; // 加密方式
+    public $protocol;
+    public $obfs;
+    public $obfsparam;
     public $info; // 节点信息备注
     public $status; // 状态
     public $custom_method; // 是否支持自定义加密 0-不可自定义 1-可自定义
